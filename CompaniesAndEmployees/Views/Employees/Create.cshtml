@@ -1,12 +1,14 @@
 ﻿@model CompaniesAndEmployees.Models.Employee
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Employees";
 }
 
-<h1>Create</h1>
+<h1>Employees</h1>
 
-<h4>Employee</h4>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -34,19 +36,46 @@
             </div>
             <div class="form-group">
                 <label asp-for="Company" class="control-label"></label>
-                <select asp-for="CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
+                <select asp-for="CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="button" id="createButton" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Patronymic)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Company)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="employeesTable">
+    </tbody>
+</table>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/employees.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

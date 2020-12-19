@@ -1,4 +1,5 @@
 using CompaniesAndEmployees.Data;
+using CompaniesAndEmployees.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +26,7 @@ namespace CompaniesAndEmployees
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddSignalR();
 
             services.AddDbContext<CAEContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CAEContext")));
@@ -53,6 +55,7 @@ namespace CompaniesAndEmployees
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<EmployeesHub>("/employeeshub");
             });
         }
     }
