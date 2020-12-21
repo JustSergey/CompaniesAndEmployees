@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CompaniesAndEmployees.Models.Employee>
+﻿@model CompaniesAndEmployees.Models.Employee
 
 @{
     ViewData["Title"] = "Employees";
@@ -7,8 +7,49 @@
 <h1>Employees</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a href="#" onclick="showForm()">Create New</a>
 </p>
+<div id="createDiv" hidden="hidden">
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" id="createForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Surname" class="control-label"></label>
+                    <input asp-for="Surname" class="form-control" />
+                    <span asp-validation-for="Surname" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Patronymic" class="control-label"></label>
+                    <input asp-for="Patronymic" class="form-control" />
+                    <span asp-validation-for="Patronymic" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Company" class="control-label"></label>
+                    <select asp-for="CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <span id="doneSpan" hidden="hidden" style="color:green">Done!</span>
+                </div>
+                <div class="form-group">
+                    <input type="reset" value="Close" class="btn btn-link" onclick="hideForm()"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -30,30 +71,12 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Surname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patronymic)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Company.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody id="employeesTable">
     </tbody>
 </table>
+
+@section Scripts {
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/employees.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

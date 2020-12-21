@@ -2,10 +2,11 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/employeeshub").build();
 
-connection.on("ReceiveEmployees", function (employees) {
+connection.on("AddEmployees", function (employees) {
     var table = document.getElementById("employeesTable");
     for (var i = 0; i < employees.length; i++) {
         var row = document.createElement("tr");
+        row.id = "row_" + employees[i].id;
 
         var td = document.createElement("td");
         td.innerHTML = employees[i].name;
@@ -39,7 +40,8 @@ connection.on("ReceiveEmployees", function (employees) {
         td.appendChild(a);
         td.append(" | ");
         var a = document.createElement("a")
-        a.href = "/Employees/Delete/" + employees[i].id;
+        a.href = "#";
+        a.setAttribute("onclick", "deleteEmployee(" + employees[i].id + ")");
         a.innerHTML = "Delete";
         td.appendChild(a);
         row.appendChild(td);
@@ -48,9 +50,42 @@ connection.on("ReceiveEmployees", function (employees) {
     }
 });
 
+connection.on("RemoveEmployee", function (id) {
+    document.getElementById("row_" + id).remove();
+});
+
 connection.start();
 
-document.getElementById("createButton").addEventListener("click", function (event) {
-
+document.getElementById("createForm").addEventListener("submit", function (event) {
+    document.getElementById("doneSpan").hidden = true;
     event.preventDefault();
+    if (!$(this).valid())
+        return;
+    var array = $(this).serializeArray();
+    var result = {};
+    array.map(a =>
+    {
+        if (!a.name.startsWith("_"))
+        {
+            if (a.name.endsWith("Id"))
+                result[a.name] = parseInt(a.value);
+            else
+                result[a.name] = a.value;
+        }
+    });
+    var done = connection.invoke("AddEmployee", result);
+    if (done)
+        document.getElementById("doneSpan").hidden = false;
 });
+
+function deleteEmployee(id) {
+    connection.invoke("DeleteEmployee", id);
+}
+
+function showForm() {
+    document.getElementById("createDiv").hidden = false;
+}
+function hideForm() {
+    document.getElementById("createDiv").hidden = true;
+    document.getElementById("doneSpan").hidden = true;
+}
