@@ -24,10 +24,10 @@ namespace CompaniesAndEmployees.Hubs
 
         public async Task<bool> AddEmployee(Employee employee)
         {
-            await context.AddAsync(employee);
             employee.Company = await context.Companies.FindAsync(employee.CompanyId);
             if (employee.Company == null)
                 return false;
+            await context.AddAsync(employee);
             await context.SaveChangesAsync();
             await Clients.All.SendAsync("AddEmployees", new List<Employee> { employee });
             return true;
